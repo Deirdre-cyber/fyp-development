@@ -23,6 +23,7 @@ pipelines:
             - pip install flake8
             - flake8 . --extend-exclude=dist,build --show-source --statistics
 
+pipelines:
   branches:
     main:
       - step:
