@@ -1,0 +1,1 @@
+Directory for project documentation, including API documentation, tutorials, and explanatory notes.
