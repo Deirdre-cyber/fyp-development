@@ -1,8 +1,7 @@
 """ Split the data into train, validation and test sets. """
 import os
-from sklearn.model_selection import train_test_split
 import shutil
-
+from sklearn.model_selection import train_test_split
 
 RAW_DIR = '../data/raw'
 PROCESSED_DIR = '../data/processed'
@@ -33,16 +32,22 @@ X_train_temp, X_test, y_train_temp, y_test = train_test_split(
 X_train, X_val, y_train, y_val = train_test_split(
     X_train_temp, y_train_temp, test_size=0.15, stratify=y_train_temp, random_state=42)
 
-def move_files(files, labels, destination_dir):
-    for file, label in zip(files, labels):
+""" Move the files to the respective directories. 
+    Args:
+        files (list): List of file paths.
+        labels (list): List of labels.
+        destination_dir (str): Path to the destination directory.
+
+    Returns:
+        None
+
+"""
+def move_files(set_path, destination_labels, destination_dir):
+    for set_path, destination_labels in zip(set_path, destination_labels):
         destination = os.path.join(destination_dir, label)
         os.makedirs(destination, exist_ok=True)
-        filename = os.path.basename(file)
-        destination_file = os.path.join(destination, filename)
-        shutil.move(file, destination_file)
+        shutil.copy(set_path, os.path.join(destination, os.path.basename(set_path)))
 
 move_files(X_train, y_train, train_dir)
 move_files(X_val, y_val, val_dir)
 move_files(X_test, y_test, test_dir)
-
-
