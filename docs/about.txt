@@ -2,7 +2,7 @@ Directory for project documentation, including API documentation, tutorials, and
 
 File naming convention
 
-The filename consists of a 7-part numerical identifier (e.g., 02-01-06-01-02-01-12.mp4). These identifiers define the stimulus characteristics: 
+The filename consists of a 7-part numerical identifier (e.g., 02-01-06-01-02-01-12 ). These identifiers define the stimulus characteristics: 
 
 Filename identifiers 
 
