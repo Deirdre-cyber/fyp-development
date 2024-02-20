@@ -24,39 +24,41 @@ git clone https://github.com/your_username/your_project.git
 
 ### Source of Audio Files ###
 
-All data files have been taken from the public donateacry-corpus-cleaned-updated repository, linked below:
+All data files have been taken from The Ryerson Audio-Visual Database of Emotional Speech and Song (RAVDESS), linked below:
 
-https://github.com/gveres/donateacry-corpus/tree/master/donateacry_corpus_cleaned_and_updated_data
+(https://zenodo.org/records/1188976)
+
+#### File naming convention
+
+The filename consists of a 7-part numerical identifier (e.g., 02-01-06-01-02-01-12.mp4). These identifiers define the stimulus characteristics: 
+
+#### Filename identifiers 
+
+Modality (01 = full-AV, 02 = video-only, 03 = audio-only).
+Vocal channel (01 = speech, 02 = song).
+Emotion (01 = neutral, 02 = calm, 03 = happy, 04 = sad, 05 = angry, 06 = fearful, 07 = disgust, 08 = surprised).
+Emotional intensity (01 = normal, 02 = strong). NOTE: There is no strong intensity for the 'neutral' emotion.
+Statement (01 = "Kids are talking by the door", 02 = "Dogs are sitting by the door").
+Repetition (01 = 1st repetition, 02 = 2nd repetition).
+Actor (01 to 24. Odd numbered actors are male, even numbered actors are female).
+
+Filename example: 02-01-06-01-02-01-12.mp4 
+
+Video-only (02)
+Speech (01)
+Fearful (06)
+Normal intensity (01)
+Statement "dogs" (02)
+1st Repetition (01)
+12th Actor (12)
+Female, as the actor ID number is even.
+License information
 
 
-### File Details ###
-
-* All files are in wav format with uniform bit and sampling rates (128kbps/8kHz)
-* All audio samples are labelled as follows:
-  * [unique app instance id]-[Unix time epoch]-[mobile app version used]-[sex]-[age-range]-[reason for cry]
-
-### File Tag Details ###
-
-#### Gender
-* m - male
-* f - female
-
-#### Age
-* 04 - 0 to 4 weeks old
-* 48 - 4 to 8 weeks old
-* 26 - 2 to 6 months old
-* 72 - 7 month to 2 years old
-* 22 - more than 2 years old
-
-#### Reason
-* hu - hungry
-* bu - needs burping
-* bp - belly pain
-* dc - discomfort
-* ti - tired
 
 ### License ###
-This donateacry-corpus is made available under the Open Database License: http://opendatacommons.org/licenses/odbl/1.0/. Any rights in individual contents of the database are licensed under the Database Contents License: http://opendatacommons.org/licenses/dbcl/1.0/ - See more at: http://opendatacommons.org/licenses/odbl/#sthash.ejQJkkvi.dpuf
+The RAVDESS is released under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License, CC BY-NC-SA 4.0 
+Commercial licenses for the RAVDESS can also be purchased.  For more information, please visit our license fee page, or contact us at ravdess@gmail.com.
 
 
 ### Who do I talk to? ###
