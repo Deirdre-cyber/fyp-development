@@ -3,7 +3,7 @@
 ### Installation Instructions ###
 
 ```
-https://github.com/CrySense/fyp-development.git
+git clone https://github.com/CrySense/fyp-development.git
 ```
 
 ### What is this repository for? ###
