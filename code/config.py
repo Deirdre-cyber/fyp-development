@@ -1,2 +1,2 @@
 """ Configuration file for the project."""
-DATA_PATH = '../data/raw/'
+DIR_ROOT_PATH = '../data/raw/'
