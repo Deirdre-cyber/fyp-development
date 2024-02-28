@@ -1,12 +1,16 @@
 import os
 import shutil
+import logging
+
 import config
 
+logging.basicConfig(filename='example.log', level=logging.INFO)
 
 PROCESSED_DIR = config.PROCESSED_DIR
 
 def load_data(dir_path):
     """ Load the data from the directory into python. """
+    logging.info(f'Loading data from {dir_path}')
     subdirectories = [f.path for f in os.scandir(dir_path) if f.is_dir()]
     file_paths = []
     labels = []
@@ -21,6 +25,7 @@ def load_data(dir_path):
 
 def create_dir():
     """ Create the directories for the processed data. """
+    logging.info(f'Creating directories for processed data')
     train_dir = os.path.join(PROCESSED_DIR, 'train')
     val_dir = os.path.join(PROCESSED_DIR, 'val')
     test_dir = os.path.join(PROCESSED_DIR, 'test')
@@ -28,10 +33,12 @@ def create_dir():
     os.makedirs(train_dir, exist_ok=True)
     os.makedirs(val_dir, exist_ok=True)
     os.makedirs(test_dir, exist_ok=True)
+
     return train_dir, val_dir, test_dir
 
 def move_files(file_paths, labels, directory):
     """ Move the files to the respective directories. """
+    logging.info('Moving files to %s', directory)
     for file_paths, labels in zip(file_paths, labels):
         destination = os.path.join(directory, labels)
         os.makedirs(destination, exist_ok=True)

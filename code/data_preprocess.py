@@ -1,13 +1,16 @@
 """ Augment the data and preprocess it for training """
-import numpy as np
-import random
-import librosa as lr
 import os
-import config
+import random
 import shutil
-import soundfile as sf
-from data_loading import load_data
 import logging
+
+import numpy as np
+import librosa as lr
+import soundfile as sf
+
+import config
+from data_loading import load_data
+
 
 logging.basicConfig(filename='example.log', level=logging.INFO)
 logger = logging.getLogger(__name__)
