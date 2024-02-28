@@ -1,14 +1,13 @@
-""" Load the data from the raw directory into python. """
 import os
 import shutil
 import config
 
-RAW_DIR = config.ROOT_DIR_PATH
+
 PROCESSED_DIR = config.PROCESSED_DIR
 
-def load_data():
-    """ Load the data from the raw directory into python. """
-    subdirectories = [f.path for f in os.scandir(RAW_DIR) if f.is_dir()]
+def load_data(dir_path):
+    """ Load the data from the directory into python. """
+    subdirectories = [f.path for f in os.scandir(dir_path) if f.is_dir()]
     file_paths = []
     labels = []
 
