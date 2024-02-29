@@ -12,7 +12,7 @@ import config
 from data_loading import load_data
 
 
-logging.basicConfig(filename='example.log', level=logging.INFO)
+logging.basicConfig(filename="example.log", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 output_dir = os.path.join(config.TRAIN_DIR, 'augmented')
@@ -39,7 +39,6 @@ def inject_noise(audio_data, noise_factor):
     """ Inject random noise into the audio data. """
     noise = np.random.randn(len(audio_data))
     augmented_data = audio_data + noise_factor * noise
-    # Cast back to same data type
     augmented_data = augmented_data.astype(type(audio_data[0]))
     return augmented_data
 
@@ -58,8 +57,6 @@ def shift_time(data, sampling_rate, shift_max, shift_direction):
     else:
         augmented_data[shift:] = 0
     return augmented_data
-
-import os
 
 def select_random_files(file_paths, file_labels, percentage=0.15):
     """ Randomly select a percentage of WAV files and their corresponding labels. """

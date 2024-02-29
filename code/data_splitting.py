@@ -1,9 +1,16 @@
 """ Split the data into train, validation and test sets. """
-from sklearn.model_selection import train_test_split
 import config
+import logging
+
+from sklearn.model_selection import train_test_split
 from data_loading import load_data
 from data_loading import create_dir
 from data_loading import move_files
+
+
+logging.basicConfig(filename="example.log", level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 RAW_DIR = config.ROOT_DIR_PATH
 
@@ -19,4 +26,4 @@ X_train, X_val, y_train, y_val = train_test_split(
 move_files(X_train, y_train, train_dir)
 move_files(X_val, y_val, val_dir)
 move_files(X_test, y_test, test_dir)
-print('Data splitting complete.')
+logging.info('Data splitting complete.')

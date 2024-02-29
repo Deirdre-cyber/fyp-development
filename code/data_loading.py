@@ -4,13 +4,14 @@ import logging
 
 import config
 
-logging.basicConfig(filename='example.log', level=logging.INFO)
+logging.basicConfig(filename="example.log", level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 PROCESSED_DIR = config.PROCESSED_DIR
 
 def load_data(dir_path):
     """ Load the data from the directory into python. """
-    logging.info(f'Loading data from {dir_path}')
+    logging.info('Loading data from %s', dir_path)
     subdirectories = [f.path for f in os.scandir(dir_path) if f.is_dir()]
     file_paths = []
     labels = []
@@ -25,7 +26,7 @@ def load_data(dir_path):
 
 def create_dir():
     """ Create the directories for the processed data. """
-    logging.info(f'Creating directories for processed data')
+    logging.info('Creating directories for processed data')
     train_dir = os.path.join(PROCESSED_DIR, 'train')
     val_dir = os.path.join(PROCESSED_DIR, 'val')
     test_dir = os.path.join(PROCESSED_DIR, 'test')
