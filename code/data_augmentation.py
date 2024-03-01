@@ -93,12 +93,13 @@ def augment_data(wav_files, labels):
         technique = random.choice(['noise', 'time', 'pitch', 'stretch', 'compress']) # to test 15 vs 65%
         # count the number of times each technique is used
         technique_count[technique] += 1
-        logging.info("Augmenting audio using %s technique", technique)
+        #logging.info("Augmenting audio using %s technique", technique)
         augmented_audio = augment_audio(audio, technique)
         augmented_audio_files.append(augmented_audio)
     logger.info("Number of times each technique was used: %s", technique_count)
     return augmented_audio_files, labels
 
+# update augment to augment spectrogram files also
 def augment_data_pipeline(directory):
     """ Augment the data and save it to a new directory. """
     output_dir = os.path.join(directory, 'augmented')

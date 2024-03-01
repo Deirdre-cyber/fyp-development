@@ -19,17 +19,22 @@ RAW_DIR = config.ROOT_DIR_PATH
 
 def main():
     """ Main function """
-    # Load the data
+    
     file_paths, labels = load_data(RAW_DIR)
-    # Create the directories for the processed data
+    
     train_dir, val_dir, test_dir = create_dir()
-    # Split the data into training, validation, and testing sets
+    print("Directories created.", train_dir, val_dir, test_dir) # for debugging
+    
     split_data(file_paths, labels, train_dir, val_dir, test_dir)
-    print("Data splitting complete.")
+    print("Data splitting complete.") # for debugging
+
     augment_data_pipeline(train_dir)
-    print("Data augmentation complete.")
-    convert_to_spectrogram(config.TRAIN_DIR)
-    print("Spectrogram conversion complete.")
+    print("Data augmentation complete.") # for debugging
+
+    augmented_dir = convert_to_spectrogram(config.TRAIN_DIR)
+    print("Spectrogram conversion complete.") # for debugging
+
+    #augment_data_pipeline(augmented_dir)
 
 if __name__ == "__main__":
     main()

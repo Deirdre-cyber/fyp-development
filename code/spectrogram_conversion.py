@@ -3,8 +3,8 @@ import os
 import logging
 import numpy as np
 import librosa as lr
-import soundfile as sf
 import config
+import matplotlib.pyplot as plt
 from data_loading import load_data
 
 logging.basicConfig(filename="example.log", level=logging.INFO)
@@ -32,6 +32,7 @@ def convert_to_spectrogram(directory):
     logging.info(
         "Computing mel spectrogram for each audio file in the training set and saving to %s", output_dir)
     for file_path, _ in zip(training_path, training_labels):
+        logger.info("Processing file: %s", file_path)
         file_path = os.path.normpath(file_path)
         audio, sr = lr.load(file_path, sr=None)
 
@@ -48,6 +49,13 @@ def convert_to_spectrogram(directory):
         mel_spectrogram = lr.power_to_db(mel_spectrogram, ref=np.max)
 
         file_name = os.path.basename(file_path)
-        output_file_path = os.path.join(output_dir, file_name)
-        sf.write(output_file_path, mel_spectrogram, sr, format='wav')
+
+        output_file_path = os.path.join(output_dir, file_name[:-4] + '.png')  # Change the extension to PNG
+        plt.figure(figsize=(10, 4))
+        plt.imshow(mel_spectrogram, cmap='viridis', origin='lower')
+        plt.axis('off')
+        plt.savefig(output_file_path, bbox_inches='tight', pad_inches=0)
+        plt.close()
     logging.info("Total of %d files processed", len(training_path))
+
+    return output_dir

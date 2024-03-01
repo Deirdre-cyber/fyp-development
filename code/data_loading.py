@@ -46,3 +46,4 @@ def move_files(file_paths, labels, directory):
         os.makedirs(destination, exist_ok=True)
         destination_file = os.path.join(destination, os.path.basename(file_path))
         shutil.copy(file_path, destination_file)
+    logging.info('Files moved to %s', directory)

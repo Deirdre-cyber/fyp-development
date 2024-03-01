@@ -13,7 +13,10 @@ def split_data(file_paths, labels, train_dir, val_dir, test_dir):
 
     X_train, X_val, y_train, y_val = train_test_split(
         X_train_temp, y_train_temp, test_size=0.15, stratify=y_train_temp, random_state=42)
+    logging.info("file paths: %s", file_paths)
 
+    print("train dir: ", train_dir) # for debugging
+    
     move_files(X_train, y_train, train_dir)
     move_files(X_val, y_val, val_dir)
     move_files(X_test, y_test, test_dir)
