@@ -11,18 +11,12 @@ import soundfile as sf
 import config
 from data_loading import load_data
 
-
 logging.basicConfig(filename="example.log", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-output_dir = os.path.join(config.TRAIN_DIR, 'augmented')
-output_dir = os.path.normpath(output_dir)
-NUMBER_OF_TECHNIQUES = 5
-training_path, training_labels = load_data(config.TRAIN_DIR)
-
-
-def augment_audio(audio, sr, technique):
+def augment_audio(audio, technique):
     """ Augment the audio data using the specified technique. """
+    sr = config.SAMPLE_RATE
     if technique == 'noise':
         return inject_noise(audio, 0.005)
     if technique == 'time':
@@ -58,7 +52,7 @@ def shift_time(data, sampling_rate, shift_max, shift_direction):
         augmented_data[shift:] = 0
     return augmented_data
 
-def select_random_files(file_paths, file_labels, percentage=0.15):
+def select_random_files(file_paths, file_labels, percentage=0.65):
     """ Randomly select a percentage of WAV files and their corresponding labels. """
     logger.info("Selecting %s percent of the data", percentage * 100)
     num_idx_to_select = int(len(file_paths) * percentage)
@@ -72,7 +66,6 @@ def select_random_files(file_paths, file_labels, percentage=0.15):
 
     return selected_file_paths, selected_labels
 
-
 def load_wav_files(file_paths, file_labels):
     """ Load the WAV files and their corresponding labels. """
     logger.info("Loading WAV files")
@@ -80,7 +73,7 @@ def load_wav_files(file_paths, file_labels):
 
     try:
         for file_path in file_paths:
-            logger.info("Loading WAV file: %s", file_path)
+            #logger.info("Loading WAV file: %s", file_path)
             audio, _ = lr.load(file_path, sr=config.SAMPLE_RATE)
             all_wav_files.append(audio)
     except FileNotFoundError as e:
@@ -93,24 +86,37 @@ def load_wav_files(file_paths, file_labels):
 def augment_data(wav_files, labels):
     """ Augment the data using one of 5 techniques each time. """
     augmented_audio_files = []
+    technique_count = {'noise': 0, 'time': 0, 'pitch': 0, 'stretch': 0, 'compress': 0}
 
-    for audio, _ in zip(wav_files, labels):
-        technique = random.choice(
-            ['noise', 'time', 'pitch', 'stretch', 'compress'])
-        augmented_wav = augment_audio(audio, config.SAMPLE_RATE, technique)
-        augmented_audio_files.append(augmented_wav)
 
+    for audio in wav_files:
+        technique = random.choice(['noise', 'time', 'pitch', 'stretch', 'compress']) # to test 15 vs 65%
+        # count the number of times each technique is used
+        technique_count[technique] += 1
+        logging.info("Augmenting audio using %s technique", technique)
+        augmented_audio = augment_audio(audio, technique)
+        augmented_audio_files.append(augmented_audio)
+    logger.info("Number of times each technique was used: %s", technique_count)
     return augmented_audio_files, labels
 
-if os.path.exists(output_dir):
-    shutil.rmtree(output_dir)
-os.makedirs(output_dir)
-output_dir = os.path.normpath(output_dir)
+def augment_data_pipeline(directory):
+    """ Augment the data and save it to a new directory. """
+    output_dir = os.path.join(directory, 'augmented')
+    output_dir = os.path.normpath(output_dir)
+    #techniques = ['noise', 'time', 'pitch', 'stretch', 'compress']
 
-for i in range(NUMBER_OF_TECHNIQUES):
+    if os.path.exists(output_dir):
+        shutil.rmtree(output_dir)
+    os.makedirs(output_dir)
+    output_dir = os.path.normpath(output_dir)
+
+    training_path, training_labels = load_data(directory)
+
+    #for technique in techniques:
     random_15_path, random_15_label = select_random_files(training_path, training_labels)
     random_wav_files, random_labels = load_wav_files(random_15_path, random_15_label)
-    augmented_wav_files, augmented_labels = augment_data(random_wav_files, random_labels)
+    augmented_wav_files, _ = augment_data(random_wav_files, random_labels)
+    logger.info("number of augmented files: %s", len(augmented_wav_files))
 
     for idx, wav in enumerate(augmented_wav_files):
         random_file_path = random_15_path[idx]
@@ -118,5 +124,5 @@ for i in range(NUMBER_OF_TECHNIQUES):
         output_file_path = os.path.join(output_dir, file_name)
         sf.write(output_file_path, wav, config.SAMPLE_RATE)
 
-logger.info("Augmented data saved to: %s", output_dir)
-logger.info("Length of augmented data: %s", len(augmented_wav_files))
+    logger.info("Augmented data saved to: %s", output_dir)
+    logger.info("Length of augmented data: %s", len(os.listdir(output_dir)))
