@@ -12,14 +12,14 @@ PROCESSED_DIR = config.PROCESSED_DIR
 def load_data(dir_path):
     """ Load the data from the directory into python. """
     logging.info('Loading data from %s', dir_path)
-    subdirectories = [f.path for f in os.scandir(dir_path) if f.is_dir()]
+    subdirectories = [file_name.path for file_name in os.scandir(dir_path) if file_name.is_dir()]
     file_paths = []
     labels = []
 
     for subdir in subdirectories:
         label = os.path.basename(subdir)
-        files = [os.path.join(subdir, f) for f in os.listdir(
-            subdir) if f.endswith('.wav')]
+        files = [os.path.join(subdir, file_name) for file_name in os.listdir(
+            subdir) if file_name.endswith('.wav')]
         file_paths.extend(files)
         labels.extend([label] * len(files))
     return file_paths, labels
@@ -39,8 +39,11 @@ def create_dir():
 
 def move_files(file_paths, labels, directory):
     """ Move the files to the respective directories. """
+    directory = os.path.normpath(directory)
     logging.info('Moving files to %s', directory)
-    for file_paths, labels in zip(file_paths, labels):
-        destination = os.path.join(directory, labels)
+    for file_path, label in zip(file_paths, labels):
+        destination = os.path.join(directory, label)
         os.makedirs(destination, exist_ok=True)
-        shutil.copy(file_paths, os.path.join(destination, os.path.basename(file_paths)))
+        destination_file = os.path.join(destination, os.path.basename(file_path))
+        shutil.copy(file_path, destination_file)
+    logging.info('Files moved to %s', directory)
