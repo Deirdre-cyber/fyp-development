@@ -7,6 +7,10 @@ import logging
 import numpy as np
 import librosa as lr
 import soundfile as sf
+import matplotlib.pyplot as plt
+import SpecAugment
+
+from SpecAugment import spec_augment_tensorflow # issue with import
 
 import config
 from data_loading import load_data
@@ -50,6 +54,11 @@ def shift_time(data, sampling_rate, shift_max, shift_direction):
         augmented_data[:shift] = 0
     else:
         augmented_data[shift:] = 0
+    return augmented_data
+
+def spec_augment_files(spectrogram):
+    """ Apply SpecAugment to the audio data. """
+    augmented_data = spec_augment_tensorflow.spec_augment(mel_spectrogram=spectrogram)
     return augmented_data
 
 def select_random_files(file_paths, file_labels, percentage=0.65):
@@ -100,7 +109,7 @@ def augment_data(wav_files, labels):
     return augmented_audio_files, labels
 
 # update augment to augment spectrogram files also
-def augment_data_pipeline(directory):
+def augment_wav_data_pipeline(directory):
     """ Augment the data and save it to a new directory. """
     output_dir = os.path.join(directory, 'augmented')
     output_dir = os.path.normpath(output_dir)
@@ -127,3 +136,25 @@ def augment_data_pipeline(directory):
 
     logger.info("Augmented data saved to: %s", output_dir)
     logger.info("Length of augmented data: %s", len(os.listdir(output_dir)))
+
+
+def augment_spectrogram_data_pipeline(directory):
+    """
+    Augment spectrograms in a directory using spec_augment_tensorflow. """
+
+    augmentation_probability = 0.65
+
+    logger.info("Augmenting spectrograms in directory: %s", directory)
+    for root, _, filenames in os.walk(directory):
+        for filename in filenames:
+            file_path = os.path.join(root, filename)
+            mel_spectrogram = plt.imread(file_path)
+
+            if np.random.rand() < augmentation_probability:
+                warped_masked_spectrogram = spec_augment_tensorflow.spec_augment(mel_spectrogram=mel_spectrogram)
+
+                output_file_path = os.path.join(root, filename)
+                plt.imsave(output_file_path, warped_masked_spectrogram)
+
+                logger.info("Augmented spectrogram saved: %s", output_file_path)
+    logger.info("Spectrogram augmentation complete.")

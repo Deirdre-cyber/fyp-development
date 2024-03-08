@@ -7,7 +7,7 @@ import config
 from sklearn.model_selection import train_test_split
 from data_loading import load_data, create_dir, move_files
 from data_splitting import split_data
-from data_augmentation import augment_data_pipeline
+from data_augmentation import augment_wav_data_pipeline,augment_spectrogram_data_pipeline
 from spectrogram_conversion import convert_to_spectrogram
 
 logging.basicConfig(filename="example.log", level=logging.INFO)
@@ -28,13 +28,14 @@ def main():
     split_data(file_paths, labels, train_dir, val_dir, test_dir)
     print("Data splitting complete.") # for debugging
 
-    augment_data_pipeline(train_dir)
+    augment_wav_data_pipeline(train_dir)
     print("Data augmentation complete.") # for debugging
 
-    augmented_dir = convert_to_spectrogram(config.TRAIN_DIR)
+    convert_to_spectrogram(config.TRAIN_DIR)
     print("Spectrogram conversion complete.") # for debugging
 
-    #augment_data_pipeline(augmented_dir)
+    augment_spectrogram_data_pipeline(config.TRAIN_DIR + '/spectrograms')
+    print("Spectrogram augmentation complete.") # for debugging
 
 if __name__ == "__main__":
     main()
