@@ -4,13 +4,14 @@ import random
 import shutil
 import logging
 
+import nlpaug.augmenter.audio as naf
+import nlpaug.flow as naf
+import nlpaug.augmenter.spectrogram as nas
+
 import numpy as np
 import librosa as lr
 import soundfile as sf
 import matplotlib.pyplot as plt
-import SpecAugment
-
-from SpecAugment import spec_augment_tensorflow # issue with import
 
 import config
 from data_loading import load_data
@@ -54,11 +55,6 @@ def shift_time(data, sampling_rate, shift_max, shift_direction):
         augmented_data[:shift] = 0
     else:
         augmented_data[shift:] = 0
-    return augmented_data
-
-def spec_augment_files(spectrogram):
-    """ Apply SpecAugment to the audio data. """
-    augmented_data = spec_augment_tensorflow.spec_augment(mel_spectrogram=spectrogram)
     return augmented_data
 
 def select_random_files(file_paths, file_labels, percentage=0.65):
@@ -140,7 +136,15 @@ def augment_wav_data_pipeline(directory):
 
 def augment_spectrogram_data_pipeline(directory):
     """
-    Augment spectrograms in a directory using spec_augment_tensorflow. """
+    Augment spectrograms in a directory using nlpaug. """
+    output_dir = os.path.join(directory, 'augmented')
+    output_dir = os.path.normpath(output_dir)
+
+    if os.path.exists(output_dir):
+        shutil.rmtree(output_dir)
+    os.makedirs(output_dir)
+    output_dir = os.path.normpath(output_dir)
+
 
     augmentation_probability = 0.65
 
@@ -151,10 +155,18 @@ def augment_spectrogram_data_pipeline(directory):
             mel_spectrogram = plt.imread(file_path)
 
             if np.random.rand() < augmentation_probability:
-                warped_masked_spectrogram = spec_augment_tensorflow.spec_augment(mel_spectrogram=mel_spectrogram)
+                # https://github.com/makcedward/nlpaug/blob/master/example/spectrogram_augmenter.ipynb
+                flow = naf.Sequential([
+                    # play around with the parameters - test in the notebook
+                    nas.FrequencyMaskingAug(zone=(0, 1), coverage=1, factor=(0, 80)), 
+                    nas.TimeMaskingAug(zone=(0.1, 0.1), coverage=0.5), 
+                ])
 
-                output_file_path = os.path.join(root, filename)
-                plt.imsave(output_file_path, warped_masked_spectrogram)
+                aug_data = flow.augment(mel_spectrogram)
+                aug_data = np.squeeze(aug_data)
+
+                output_file_path = os.path.join(output_dir, filename)
+                plt.imsave(output_file_path, aug_data)
 
                 logger.info("Augmented spectrogram saved: %s", output_file_path)
     logger.info("Spectrogram augmentation complete.")
