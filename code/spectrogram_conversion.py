@@ -3,9 +3,10 @@ import os
 import logging
 import numpy as np
 import librosa as lr
-import config
 import matplotlib.pyplot as plt
+
 from data_loading import load_data
+import config
 
 logging.basicConfig(filename="example.log", level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -50,10 +51,10 @@ def convert_to_spectrogram(directory):
 
         file_name = os.path.basename(file_path)
 
-        output_file_path = os.path.join(output_dir, file_name[:-4] + '.png')  # Change the extension to PNG
+        output_file_path = os.path.join(output_dir, file_name[:-4] + '.png')
         plt.figure(figsize=(10, 4))
         plt.imshow(mel_spectrogram, cmap='viridis', origin='lower')
-        plt.axis('off')
+        plt.axis("off")
         plt.savefig(output_file_path, bbox_inches='tight', pad_inches=0)
         plt.close()
     logging.info("Total of %d files processed", len(training_path))
