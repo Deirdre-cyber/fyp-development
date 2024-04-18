@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 import shutil
 import logging
@@ -20,6 +21,7 @@ RAW_DIR = config.RAW_DIR_PATH
 WAV_TRAIN_DIR = config.WAV_TRAIN_DIR_PATH
 LMS_TRAIN_DIR = config.LMS_TRAIN_DIR_PATH
 AUGMENTED_WAV_DIR = config.AUGMENTED_WAV_DIR_PATH
+AUGMENTED_LMS_DIR = config.AUGMENTED_LMS_DIR_PATH
 
 def install_dependencies():
     try:
@@ -30,9 +32,12 @@ def install_dependencies():
 
 def main():
     """ Main function """
+
+    # check sample rates
+    # 
     
     #convert_to_spectrogram(WAV_DIR)
-    print("Spectrogram conversion complete.") # for debugging
+    #print("Spectrogram conversion complete.") # for debugging
     
     #train_dir, val_dir, test_dir = create_dir()
     #print("Directories created.", train_dir, val_dir, test_dir) # for debugging
@@ -42,19 +47,19 @@ def main():
     #split_data(audio_file_paths, audio_file_labels, train_dir, val_dir, test_dir)
     #print("Data splitting complete.") # for debugging
 
-    augment_wav_data_pipeline(WAV_TRAIN_DIR)
-    print("Wav augmentation complete.") # for debugging
+    #augment_wav_data_pipeline(WAV_TRAIN_DIR)
+    #print("Wav augmentation complete.") # for debugging
 
-    augment_spectrogram_data_pipeline(LMS_TRAIN_DIR)
-    print("Spectrogram augmentation complete.") # for debugging
+    #augment_spectrogram_data_pipeline(LMS_TRAIN_DIR)
+    #print("Spectrogram augmentation complete.") # for debugging
 
-    # extract features from the wav files
-   
     extract_features_wav(AUGMENTED_WAV_DIR)
-    print("Feature extraction complete.") # for debugging
+    print("Wav feature extraction complete.") # for debugging
 
-    #extract_features_lms(config.AUGMENTED_LMS_DIR)
-    #print("Feature extraction complete.") # for debugging
+    extract_features_lms(AUGMENTED_LMS_DIR)
+    print("LMS Feature extraction complete.") # for debugging
+
+    # train model using embeddings...
 
 if __name__ == "__main__":
     #install_dependencies()
