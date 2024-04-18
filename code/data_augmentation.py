@@ -14,7 +14,7 @@ import soundfile as sf
 import matplotlib.pyplot as plt
 
 import config
-from data_loading import load_data
+from data_loading import load_data_from_dir
 
 logging.basicConfig(filename="example.log", level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -105,53 +105,59 @@ def augment_data(wav_files, labels):
     return augmented_audio_files, labels
 
 # update augment to augment spectrogram files also
-def augment_wav_data_pipeline(directory):
+def augment_wav_data_pipeline(wav_train_directory):
     """ Augment the data and save it to a new directory. """
-    output_dir = os.path.join(directory, 'augmented')
-    output_dir = os.path.normpath(output_dir)
+
+    output_dir = os.path.normpath(config.AUGMENTED_WAV_DIR_PATH)
     #techniques = ['noise', 'time', 'pitch', 'stretch', 'compress']
 
     if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
     os.makedirs(output_dir)
     output_dir = os.path.normpath(output_dir)
+    
+    try:
+        training_path, training_labels = load_data_from_dir(wav_train_directory)
+    except Exception as e:
+        logging.error("Error loading data:%s", e)
+        return
 
-    training_path, training_labels = load_data(directory)
+    try:
+        #for technique in techniques:
+        random_15_path, random_15_label = select_random_files(training_path, training_labels)
+        random_wav_files, random_labels = load_wav_files(random_15_path, random_15_label)
+        augmented_wav_files, _ = augment_data(random_wav_files, random_labels)
+        logger.info("number of augmented files: %s", len(augmented_wav_files))
 
-    #for technique in techniques:
-    random_15_path, random_15_label = select_random_files(training_path, training_labels)
-    random_wav_files, random_labels = load_wav_files(random_15_path, random_15_label)
-    augmented_wav_files, _ = augment_data(random_wav_files, random_labels)
-    logger.info("number of augmented files: %s", len(augmented_wav_files))
+        for idx, wav in enumerate(augmented_wav_files):
+            random_file_path = random_15_path[idx]
+            file_name = os.path.basename(random_file_path)
+            output_file_path = os.path.join(output_dir, file_name)
+            sf.write(output_file_path, wav, config.SAMPLE_RATE)
 
-    for idx, wav in enumerate(augmented_wav_files):
-        random_file_path = random_15_path[idx]
-        file_name = os.path.basename(random_file_path)
-        output_file_path = os.path.join(output_dir, file_name)
-        sf.write(output_file_path, wav, config.SAMPLE_RATE)
-
-    logger.info("Augmented data saved to: %s", output_dir)
-    logger.info("Length of augmented data: %s", len(os.listdir(output_dir)))
-
-
+        logger.info("Augmented data saved to: %s", output_dir) # debug
+        logger.info("Length of augmented data: %s", len(os.listdir(output_dir))) # debuug
+    except Exception as e:
+        logging.error("Error augmenting data:%s", e)
+        
 def augment_spectrogram_data_pipeline(directory):
     """
     Augment spectrograms in a directory using nlpaug. """
-    output_dir = os.path.join(directory, 'augmented')
-    output_dir = os.path.normpath(output_dir)
+    output_dir = os.path.normpath(config.AUGMENTED_LMS_DIR_PATH)
 
     if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
     os.makedirs(output_dir)
     output_dir = os.path.normpath(output_dir)
 
-
     augmentation_probability = 0.65
 
     logger.info("Augmenting spectrograms in directory: %s", directory)
+
     for root, _, filenames in os.walk(directory):
         for filename in filenames:
             file_path = os.path.join(root, filename)
+            
             mel_spectrogram = plt.imread(file_path)
 
             if np.random.rand() < augmentation_probability:
@@ -159,7 +165,7 @@ def augment_spectrogram_data_pipeline(directory):
                 flow = naf.Sequential([
                     # play around with the parameters - test in the notebook
                     nas.FrequencyMaskingAug(zone=(0, 1), coverage=1, factor=(0, 80)), 
-                    nas.TimeMaskingAug(zone=(0.1, 0.1), coverage=0.5), 
+                    nas.TimeMaskingAug(zone=(0.1, 0.1), coverage=0.5) 
                 ])
 
                 aug_data = flow.augment(mel_spectrogram)
@@ -168,5 +174,6 @@ def augment_spectrogram_data_pipeline(directory):
                 output_file_path = os.path.join(output_dir, filename)
                 plt.imsave(output_file_path, aug_data)
 
-                logger.info("Augmented spectrogram saved: %s", output_file_path)
+                logger.info("Augmented spectrogram saved: %s", output_file_path) # for debugging
+
     logger.info("Spectrogram augmentation complete.")
