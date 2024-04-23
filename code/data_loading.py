@@ -15,14 +15,14 @@ def load_data_from_all(dir_path):
     file_paths = []
     labels = []
 
-    for root, dirs, files in os.walk(dir_path):
+    for root, _, files in os.walk(dir_path):
         for file_name in files:
             try:
                 file_path = os.path.join(root, file_name)
                 label = os.path.basename(root)
                 file_paths.append(file_path)
                 labels.append(label)
-            except Exception as e:
+            except OSError as e:
                 logging.error("Error loading data from file %s: %s", file_path, e)
 
     logging.info('All data loaded from %s', dir_path)
@@ -39,7 +39,8 @@ def load_data_from_dir(dir_path):
         files = [file_path for file_path in files if os.path.isfile(file_path)]
         file_paths.extend(files)
         labels.extend([os.path.basename(dir_path)] * len(files))
-    except Exception as e:
+        
+    except OSError as e:
         logging.error("Error loading data from directory %s: %s", dir_path, e)
 
     logging.info('Data loaded from %s', dir_path)
