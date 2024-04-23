@@ -23,6 +23,12 @@ LMS_TRAIN_DIR = config.LMS_TRAIN_DIR_PATH
 AUGMENTED_WAV_DIR = config.AUGMENTED_WAV_DIR_PATH
 AUGMENTED_LMS_DIR = config.AUGMENTED_LMS_DIR_PATH
 
+TEST_WAV_DIR = config.TEST_WAV_DIR_PATH
+VAL_WAV_DIR = config.VAL_WAV_DIR_PATH
+
+TEST_LMS_DIR = config.TEST_LMS_DIR_PATH
+VAL_LMS_DIR = config.VAL_LMS_DIR_PATH
+
 def install_dependencies():
     try:
         subprocess.check_call(["pip", "install", "-r", "requirements.txt"])
@@ -33,9 +39,7 @@ def install_dependencies():
 def main():
     """ Main function """
 
-    # check sample rates
-    # 
-    
+
     #convert_to_spectrogram(WAV_DIR)
     #print("Spectrogram conversion complete.") # for debugging
     
@@ -53,10 +57,16 @@ def main():
     #augment_spectrogram_data_pipeline(LMS_TRAIN_DIR)
     #print("Spectrogram augmentation complete.") # for debugging
 
+    extract_features_wav(WAV_TRAIN_DIR)
     extract_features_wav(AUGMENTED_WAV_DIR)
+    extract_features_wav(VAL_WAV_DIR)
+    extract_features_wav(TEST_WAV_DIR)
     print("Wav feature extraction complete.") # for debugging
 
+    extract_features_lms(LMS_TRAIN_DIR)
     extract_features_lms(AUGMENTED_LMS_DIR)
+    extract_features_lms(VAL_LMS_DIR)
+    extract_features_lms(TEST_LMS_DIR)
     print("LMS Feature extraction complete.") # for debugging
 
     # train model using embeddings...
