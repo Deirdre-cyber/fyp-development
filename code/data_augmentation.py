@@ -156,24 +156,24 @@ def augment_spectrogram_data_pipeline(directory):
 
     for root, _, filenames in os.walk(directory):
         for filename in filenames:
-            file_path = os.path.join(root, filename)
-            
-            mel_spectrogram = plt.imread(file_path)
+            if filename.endswith('.png'):
+                file_path = os.path.join(root, filename)
+                
+                mel_spectrogram = plt.imread(file_path)
 
-            if np.random.rand() < augmentation_probability:
-                # https://github.com/makcedward/nlpaug/blob/master/example/spectrogram_augmenter.ipynb
-                flow = naf.Sequential([
-                    # play around with the parameters - test in the notebook
-                    nas.FrequencyMaskingAug(zone=(0, 1), coverage=1, factor=(0, 80)), 
-                    nas.TimeMaskingAug(zone=(0.1, 0.1), coverage=0.5) 
-                ])
+                if np.random.rand() < augmentation_probability:
+                    # reference: https://github.com/makcedward/nlpaug/blob/master/example/spectrogram_augmenter.ipynb
+                    flow = naf.Sequential([
+                        nas.FrequencyMaskingAug(zone=(0, 1), coverage=1, factor=(20, 40),),
+                        nas.TimeMaskingAug(zone=(0,1), coverage=0.01, )
+                    ])
 
-                aug_data = flow.augment(mel_spectrogram)
-                aug_data = np.squeeze(aug_data)
+                    aug_data = flow.augment(mel_spectrogram)
+                    aug_data = np.squeeze(aug_data)
 
-                output_file_path = os.path.join(output_dir, filename)
-                plt.imsave(output_file_path, aug_data)
+                    output_file_path = os.path.join(output_dir, filename)
+                    plt.imsave(output_file_path, aug_data)
 
-                logger.info("Augmented spectrogram saved: %s", output_file_path) # for debugging
+                    logger.info("Augmented spectrogram saved: %s", output_file_path) # for debugging
 
     logger.info("Spectrogram augmentation complete.")
