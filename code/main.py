@@ -43,7 +43,6 @@ def main():
     #     shutil.rmtree(config.PROCESSED_DIR_PATH)
     # os.makedirs(config.PROCESSED_DIR_PATH)
 
-
     # convert_to_spectrogram(WAV_DIR)
     # print("Spectrogram conversion complete.") # for debugging
     
@@ -58,18 +57,16 @@ def main():
     # augment_wav_data_pipeline(WAV_TRAIN_DIR)
     # print("Wav augmentation complete.") # for debugging
 
-    augment_spectrogram_data_pipeline(LMS_TRAIN_DIR)
-    print("Spectrogram augmentation complete.") # for debugging
+    # augment_spectrogram_data_pipeline(LMS_TRAIN_DIR)
+    # print("Spectrogram augmentation complete.") # for debugging
 
+    # for wav_directory in [WAV_TRAIN_DIR, AUGMENTED_WAV_DIR, VAL_WAV_DIR, TEST_WAV_DIR]:
+    #     extract_features(wav_directory, "wav")
+    # print("Wav feature extraction complete.") # for debugging
 
-    for wav_directory in [WAV_TRAIN_DIR, AUGMENTED_WAV_DIR, VAL_WAV_DIR, TEST_WAV_DIR]:
-        extract_features(wav_directory, "wav")
-    print("Wav feature extraction complete.") # for debugging
-
-
-    for lms_directory in [LMS_TRAIN_DIR, AUGMENTED_LMS_DIR, VAL_LMS_DIR, TEST_LMS_DIR]:
-        extract_features(lms_directory, "lms")
-    print("LMS Feature extraction complete.") # for debugging
+    # for lms_directory in [LMS_TRAIN_DIR, AUGMENTED_LMS_DIR, VAL_LMS_DIR, TEST_LMS_DIR]:
+    #     extract_features(lms_directory, "lms")
+    # print("LMS Feature extraction complete.") # for debugging
 
 
 if __name__ == "__main__":
