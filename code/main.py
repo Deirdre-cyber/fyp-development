@@ -38,20 +38,21 @@ def install_dependencies():
 
 def main():
     """ Main function """
-    if os.path.exists(config.PROCESSED_DIR_PATH):
-        shutil.rmtree(config.PROCESSED_DIR_PATH)
-    os.makedirs(config.PROCESSED_DIR_PATH)
 
-    convert_to_spectrogram(WAV_DIR)
-    print("Spectrogram conversion complete.") # for debugging
-    
-    train_dir, val_dir, test_dir = create_dir()
-    print("Directories created.", train_dir, val_dir, test_dir) # for debugging
-    
-    audio_file_paths, audio_file_labels = load_data_from_all(RAW_DIR)
+    # if os.path.exists(config.PROCESSED_DIR_PATH):
+    #     shutil.rmtree(config.PROCESSED_DIR_PATH)
+    # os.makedirs(config.PROCESSED_DIR_PATH)
 
-    split_data(audio_file_paths, audio_file_labels, train_dir, val_dir, test_dir)
-    print("Data splitting complete.") # for debugging
+   # convert_to_spectrogram(WAV_DIR)
+    #print("Spectrogram conversion complete.") # for debugging
+    
+    # train_dir, val_dir, test_dir = create_dir()
+    # print("Directories created.", train_dir, val_dir, test_dir) # for debugging
+    
+    # audio_file_paths, audio_file_labels = load_data_from_all(RAW_DIR)
+
+    # split_data(audio_file_paths, audio_file_labels, train_dir, val_dir, test_dir)
+    # print("Data splitting complete.") # for debugging
 
     augment_wav_data_pipeline(WAV_TRAIN_DIR)
     print("Wav augmentation complete.") # for debugging

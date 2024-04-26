@@ -35,7 +35,7 @@ def convert_to_spectrogram(audio_file_directory):
         logging.info(file_path)
 
         try:
-            audio, sr = lr.load(file_path, sr=None)
+            audio, sr = lr.load(file_path, sr=config.SAMPLE_RATE)
 
             hop_length = int(sr * 0.01)
             n_fft = 1024
@@ -51,7 +51,7 @@ def convert_to_spectrogram(audio_file_directory):
 
             output_file_path = os.path.join(output_dir, file_name[:-4] + '.png')
             plt.figure(figsize=(10, 6))
-            plt.imshow(mel_spectrogram_db, cmap='plasma', origin='lower') # viridis, plasmas, inferno, magma, or cividis
+            plt.imshow(mel_spectrogram_db, cmap='viridis', origin='lower') # viridis, plasmas, inferno, magma, or cividis
             plt.axis("off")
             plt.savefig(output_file_path, bbox_inches='tight', pad_inches=0)
             plt.close()

@@ -164,8 +164,8 @@ def augment_spectrogram_data_pipeline(directory):
                 if np.random.rand() < augmentation_probability:
                     # reference: https://github.com/makcedward/nlpaug/blob/master/example/spectrogram_augmenter.ipynb
                     flow = naf.Sequential([
-                        nas.FrequencyMaskingAug(zone=(0, 1), coverage=1, factor=(20, 40),),
-                        nas.TimeMaskingAug(zone=(0,1), coverage=0.01, )
+                        nas.FrequencyMaskingAug(zone=(0.1,0.9), coverage=0.01 ),
+                       # nas.TimeMaskingAug(coverage=0.1) removing because params not being implemented
                     ])
 
                     aug_data = flow.augment(mel_spectrogram)
