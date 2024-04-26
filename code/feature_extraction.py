@@ -34,7 +34,7 @@ def extract_features(directory, feature_type):
     file_paths, file_labels = load_data_from_dir(directory)
     features_list = []
 
-    for file_path, file_labels in zip(file_paths, file_labels):
+    for file_path, file_label in zip(file_paths, file_labels):
         if feature_type == 'wav':
             y, sr = librosa.load(file_path)
             features = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=40)
@@ -46,14 +46,14 @@ def extract_features(directory, feature_type):
             spec_db = librosa.power_to_db(spec_norm)
             features = librosa.feature.mfcc(S=spec_db, n_mfcc=40)
 
-        # pad or truncate features if not of length 775
+        # pad or truncate features if not of length 775 to mitigate error of differnet shapes
         if features.shape[1] < 775:
             features = np.pad(features, ((0, 0), (0, 775 - features.shape[1])), mode='constant')
         elif features.shape[1] > 775:
             features = features[:, :775]
         
-        file_name = os.path.basename(file_path)
-        label = file_name.split('_')[0]
+        label = os.path.basename(file_path).split('_')[0]
+
         output_file_path = os.path.join(output_dir, "{}.npy".format(os.path.splitext(file_name)[0]))
         
         np.save(output_file_path, features)
